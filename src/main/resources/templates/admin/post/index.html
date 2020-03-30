@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html lang="en" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blogs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+<!--Setting Ids-->
+<script>
+    function setIdForDelete(id) {
+        $('#postId').attr('value', id);
+    }
+
+    function richTextEditorInitialize() {
+        var ex = $('#editor').cleditor()
+        console.log(ex)
+    }
+
+    function setIdForUpdate(id) {
+        $('#postIdForUpdate').attr('value', id)
+        var xhttp = new XMLHttpRequest();
+        // AJAX iDYE GORE GET REQUEST GONDERIR DATANI MAP OBJECTI KIMI RENDER EDIREM  SONRA BURADA KEY VALUE PRINSIPI ILE DATANI GOTURUB LAZIMI YERLERE DOLDURURAM
+        $.ajax({
+            url: "/getData/blog/" + id,
+            type: 'GET',
+            success: function (res) {
+                $("#updateTitle").val(res.title)
+                $("#thumbnailPathUpdate").val(res.thumbnailPath)
+                // BU CKEDITOR UCUN IDI
+                var RTE1 = $("#editorUpdate").cleditor(
+                )[0];
+                RTE1.$area.val(res.content);
+                RTE1.updateFrame();
+            }
+        });
+
+    }
+</script>
+<div>
+    <button style="margin: 10px;" class="btn btn-success" id="addPost" onclick="richTextEditorInitialize()"
+            data-toggle="modal" data-target="#insertModal">
+        Add Post
+    </button>
+</div>
+
+
+<div class="modal modal-fade" tabindex="-1" role="dialog" id="insertModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/adminPanel/addNewPost" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="Title" required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Thumbnail Path</label>
+                        <input type="file" name="image"
+                               required="required"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="editor">Content</label>
+                        <textarea id="editor" name="content"></textarea>
+                    </div>
+<!--                    <div class="form-group">-->
+<!--                        <label for="schedule">Schedule time</label>-->
+<!--                        <textarea id="schedule" name="scheduleTime"></textarea>-->
+<!--                    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-success" value="Add">
+                    <input type="submit" class="btn btn-danger" data-dismiss="modal" value="Cancel">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="updateModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/admin/blogs/update" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="Title" required="required"
+                               id="updateTitle"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="thumbnailPath">Thumbnail Path</label>
+                        <input type="text" name="thumbnailPath" class="form-control" placeholder="Thumbnail Path"
+                               required="required" id="thumbnailPathUpdate"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="about">Content</label>
+                        <textarea id="editorUpdate" name="content"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input name="id" type="hidden" id="postIdForUpdate">
+                    <input type="submit" class="btn btn-success" value="Add">
+                    <input type="submit" class="btn btn-danger" data-dismiss="modal" value="Cancel">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/admin/blogs/delete" method="POST">
+                <input type="hidden" name="postId" id="postId" value=""/>
+                <div class="modal-body">
+                    <p>Are you sure to delete selected post?</p>
+                </div>
+                <div class="modal-footer">
+
+                    <input type="submit" class="btn btn-success" value="Delete">
+                    <input type="button" class="btn btn-danger" data-dismiss="modal" value="Cancel">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="table-bordered table-responsive" th:object="${posts}">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Thumbnail Path</th>
+            <th>Approved</th>
+            <th>Content</th>
+            <th>Insert Time</th>
+            <th>Last Update Time</th>
+            <th>Options</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="post : ${posts}">
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.thumbnailPath}"></td>
+            <td th:text="${post.approved}"></td>
+            <td th:utext="${post.content}"></td>
+            <td th:text="${post.insertDateTime}"></td>
+            <td th:text="${post.lastUpdateTime}"></td>
+            <td>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#updateModal"
+                        th:onclick="|setIdForUpdate('${post.id}')|"
+                >
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"
+                        th:onclick="|setIdForDelete('${post.id}')|"
+                >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<style>
+
+    /* Appearance */
+    .links {
+        background-color: #123;
+        background-image: linear-gradient(to bottom, #0003, transparent);
+        border-bottom: 1px solid #0003;
+        box-shadow: 0 0 32px #0003;
+        font-size: 2em;
+        font-weight: 300;
+    }
+
+    .links > a {
+        color: #9ab;
+        padding: .75em;
+        text-align: center;
+        text-decoration: none;
+        transition: all .5s;
+    }
+
+    .links > a:hover {
+        background: #ffffff06;
+        color: #adf;
+    }
+
+
+    /* The Magic */
+    #header {
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .links {
+        display: grid;
+        grid-template-columns: repeat(var(--items), 1fr);
+        position: relative;
+    }
+</style>
+<header id="header">
+    <nav class="links" style="--items: 5;">
+        <a href="/adminPanel">Admin Panel</a>
+        <a href="/adminPanel/addNewUser">Manage users</a>
+        <a href="/adminPanel/posts">Posts</a>
+        <span class="line"></span>
+    </nav>
+</header>

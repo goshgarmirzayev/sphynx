@@ -37,13 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/user/login", "/user/register").anonymous()//this means only un authenticated users can access to login and register page
-                .antMatchers("/adminPanel/*", "/adminPanel", "/adminPanel/", "/adminPanel/details", "/adminPanel/details/*", "/logout", "/user/edit", "/rest/*").authenticated()//this means only authenticated users can access to logout
-                .and().formLogin().loginPage("/user/login").loginProcessingUrl("/login").defaultSuccessUrl("/")
-                .and().logout().logoutSuccessUrl("/")
-                .and().csrf().disable();
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/user/login", "/user/register").anonymous()//this means only un authenticated users can access to login and register page
+//                .antMatchers("/adminPanel/*", "/adminPanel", "/adminPanel/", "/adminPanel/details", "/adminPanel/details/*", "/logout", "/user/edit", "/rest/*").authenticated()//this means only authenticated users can access to logout
+//                .and().formLogin().loginPage("/user/login").loginProcessingUrl("/login").defaultSuccessUrl("/")
+//                .and().logout().logoutSuccessUrl("/")
+//                .and().csrf().disable();
     }
 
     @Bean

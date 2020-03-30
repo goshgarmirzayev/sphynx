@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:with="http://www.thymeleaf.org/extras/with"
+      layout:decorate="~{adminBase}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body layout:fragment="adminContent" onload="">
+<style>
+
+    .ql-editor {
+        min-height: 400px;
+    }
+</style>
+<div class="container">
+    <div class="card" style="margin-top: 70px">
+        <form action="/adminPanel/addNewPost" class="form-group col col-md-8 mx-auto">
+            <label>Title*</label>
+            <input type="text" name="title" class="form-control required" th:value="${post?.title}" required>
+            <label class="mt-5">Image*</label>
+            <br>
+            <input type="file" name="title" class="required" required>
+            <br>
+            <label class="mt-5">Content*</label>
+            <div id="editor" th:utext="${post?.content}">
+            </div>
+            <div>
+                <label>Publish now</label>
+                <input type="radio" id="publish" class="btn btn-primary radio">
+                <br>
+                <label>Schedule</label>
+                <input type="radio" id="schedule" class="btn btn-primary radio schedule">
+                <br>
+                <label>Save Draft</label>
+                <input type="radio" id="draft" class="btn btn-primary radio">
+            </div>
+
+            <div id="scheduler-area" style="display: none">
+                <label>Schedule time</label>
+                <input type="text" id="picker" class="form-control">
+            </div>
+            <br>
+            <br>
+            <input type="hidden" id="postId" th:value="${post!=null? post?.id: 0}">
+            <!--            <input type="hidden" id="isScheduled" value="0">-->
+            <!--            <input type="hidden" id="isPublished" value="0">-->
+            <!--            <input type="hidden" id="isDrafted" value="0">-->
+            <button id="finish" class="btn btn-success" type="button">Finish</button>
+        </form>
+    </div>
+</div>
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="//cdn.quilljs.com/1.3.6/quill.js"></script>
+<script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+    var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{'header': 1}, {'header': 2}],               // custom button values
+        [{'list': 'ordered'}, {'list': 'bullet'}],
+        [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+        [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+        [{'direction': 'rtl'}],                         // text direction
+
+        [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+        [{'header': [1, 2, 3, 4, 5, 6, false]}],
+        ['link', 'image', 'video', 'formula'],          // add's image support
+        [{'color': []}, {'background': []}],          // dropdown with defaults from theme
+        [{'font': []}],
+        [{'align': []}],
+
+        ['clean']                                         // remove formatting button
+    ];
+
+    var quill = new Quill('#editor', {
+        modules: {
+            toolbar: toolbarOptions
+        },
+
+        theme: 'snow'
+    });
+    $('#picker').datetimepicker({
+        format: "MM/DD/YYYY HH:mm"
+    });
+    $("#finish").on("click", function () {
+        let post = true
+        let title = $("input[name='title']").val();
+        let image = $("input[type='file']").prop("files")[0]
+        let content = quill.container.innerHTML;
+        let id = $("#postId").val();
+        let isScheduled = $("#schedule").is(":checked");
+        let isPublished = $("#publish").is(":checked");
+        ;
+        let isDrafted = $("#draft").is(":checked");
+        let scheduledTime = $("#picker").val();
+        let formData = new FormData();
+        let data = {}
+        data["title"] = title
+        data["image"] = image;
+        data["content"] = content
+        data["postId"] = id;
+        data["isScheduled"] = isScheduled;
+        data["isDrafted"] = isDrafted;
+        data["isPublished"] = isPublished;
+        data["scheduleTime"] = scheduledTime
+
+
+        formData.append("title", title)
+        formData.append("image", image)
+        formData.append("content", content)
+        formData.append("postId", id)
+        formData.append("isScheduled", isScheduled)
+        formData.append("isPublished", isPublished)
+        formData.append("isDrafted", isDrafted)
+        formData.append("scheduleTime", scheduledTime)
+        $(".required").each(function (index, element) {
+            if (!$(element).val()) {
+                $(element).css("border", "1px solid red")
+                $(element).focus();
+                post = false;
+            }
+        })
+        let radioSelectedCount = 0;
+        $(".radio").each(function (index, radio) {
+            if ($(radio).is(":checked")) {
+                radioSelectedCount = 1;
+            }
+        })
+        if (radioSelectedCount != 1) {
+            $(".radio").parent().css("border", "1px solid red")
+            post = false;
+        } else {
+            $(".radio").parent().css("border", "none")
+        }
+        if (content === null) {
+            $("#editor").css("border", "1px solid red")
+            post = false;
+        } else {
+        }
+        if (image === null) {
+            $("input[type=file]").css("border", "1px solid red")
+            post = false;
+        } else {
+            $("input[type=file]").css("border", "none")
+        }
+        if ($("#schedule").is(":checked")) {
+            if (scheduledTime == null) {
+                $("#picker").css("border", "1px solid red!important")
+                post = false;
+            }
+        }
+        if (post) {
+            console.log(data)
+            $.ajax({
+                type: "POST",
+                url: "/adminPanel/addNewPost",
+                data: JSON.stringify(data),
+                enctype: 'multipart/form-data',
+                success:function (res) {
+                    alert("Action is successful")
+                }
+
+
+            })
+        }
+    })
+    $(".radio").on("click", function () {
+        $("#scheduler-area").hide();
+        $(this).parent().find("input[type=radio]").each(function (index, radio) {
+            $(radio).prop("checked", false)
+        })
+        $(this).prop("checked", true)
+        if ($(this).hasClass("schedule")) {
+            $("#scheduler-area").show();
+        }
+    })
+</script>
+
+</body>
+</html>
