@@ -1,8 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:with="http://www.thymeleaf.org/extras/with"
-      layout:decorate="~{adminBase}">
-<html lang="en">
+      layout:decorate="~{adminBase.html}">
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel</title>
@@ -10,7 +9,7 @@
 </head>
 
 <body layout:fragment="adminContent">
-
+<p th:text="${'Test'}"></p>
 </body>
 </html>
 
