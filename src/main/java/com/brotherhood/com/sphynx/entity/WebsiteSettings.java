@@ -6,38 +6,36 @@
 package com.brotherhood.com.sphynx.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Thinkpad
  */
 @Entity
-@Table(name = "pub")
+@Table(name = "website_settings")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Pub.findAll", query = "SELECT p FROM Pub p")
-    , @NamedQuery(name = "Pub.findById", query = "SELECT p FROM Pub p WHERE p.id = :id")
-    , @NamedQuery(name = "Pub.findByFbUrl", query = "SELECT p FROM Pub p WHERE p.fbUrl = :fbUrl")
-    , @NamedQuery(name = "Pub.findByInstagramUrl", query = "SELECT p FROM Pub p WHERE p.instagramUrl = :instagramUrl")
-    , @NamedQuery(name = "Pub.findByLocation", query = "SELECT p FROM Pub p WHERE p.location = :location")
-    , @NamedQuery(name = "Pub.findByName", query = "SELECT p FROM Pub p WHERE p.name = :name")
-    , @NamedQuery(name = "Pub.findByTwitterUrl", query = "SELECT p FROM Pub p WHERE p.twitterUrl = :twitterUrl")
-    , @NamedQuery(name = "Pub.findByWhatsappUrl", query = "SELECT p FROM Pub p WHERE p.whatsappUrl = :whatsappUrl")})
-public class Pub implements Serializable {
+    @NamedQuery(name = "WebsiteSettings.findAll", query = "SELECT w FROM WebsiteSettings w")
+    , @NamedQuery(name = "WebsiteSettings.findById", query = "SELECT w FROM WebsiteSettings w WHERE w.id = :id")
+    , @NamedQuery(name = "WebsiteSettings.findByAbout", query = "SELECT w FROM WebsiteSettings w WHERE w.about = :about")
+    , @NamedQuery(name = "WebsiteSettings.findByExperience", query = "SELECT w FROM WebsiteSettings w WHERE w.experience = :experience")
+    , @NamedQuery(name = "WebsiteSettings.findByFbUrl", query = "SELECT w FROM WebsiteSettings w WHERE w.fbUrl = :fbUrl")
+    , @NamedQuery(name = "WebsiteSettings.findByInstagramUrl", query = "SELECT w FROM WebsiteSettings w WHERE w.instagramUrl = :instagramUrl")
+    , @NamedQuery(name = "WebsiteSettings.findByName", query = "SELECT w FROM WebsiteSettings w WHERE w.name = :name")
+    , @NamedQuery(name = "WebsiteSettings.findByStaffCount", query = "SELECT w FROM WebsiteSettings w WHERE w.staffCount = :staffCount")
+    , @NamedQuery(name = "WebsiteSettings.findByTwitterUrl", query = "SELECT w FROM WebsiteSettings w WHERE w.twitterUrl = :twitterUrl")
+    , @NamedQuery(name = "WebsiteSettings.findByWhatsappUrl", query = "SELECT w FROM WebsiteSettings w WHERE w.whatsappUrl = :whatsappUrl")})
+public class WebsiteSettings implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,34 +43,44 @@ public class Pub implements Serializable {
     @NotNull
     @Column(name = "id")
     private Integer id;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2000)
+    @Column(name = "about")
+    private String about;
+    @Column(name = "experience")
+    private Integer experience;
     @Size(max = 255)
     @Column(name = "fb_url")
     private String fbUrl;
     @Size(max = 255)
     @Column(name = "instagram_url")
     private String instagramUrl;
-    @Size(max = 2000)
-    @Column(name = "location")
-    private String location;
-    @Size(max = 255)
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "name")
     private String name;
+    @Column(name = "staff_count")
+    private Integer staffCount;
     @Size(max = 255)
     @Column(name = "twitter_url")
     private String twitterUrl;
     @Size(max = 255)
     @Column(name = "whatsapp_url")
     private String whatsappUrl;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pubId")
-    private List<Menu> menuList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pubId")
-    private List<Feedback> feedbackList;
 
-    public Pub() {
+    public WebsiteSettings() {
     }
 
-    public Pub(Integer id) {
+    public WebsiteSettings(Integer id) {
         this.id = id;
+    }
+
+    public WebsiteSettings(Integer id, String about, String name) {
+        this.id = id;
+        this.about = about;
+        this.name = name;
     }
 
     public Integer getId() {
@@ -81,6 +89,22 @@ public class Pub implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public Integer getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Integer experience) {
+        this.experience = experience;
     }
 
     public String getFbUrl() {
@@ -99,20 +123,20 @@ public class Pub implements Serializable {
         this.instagramUrl = instagramUrl;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getStaffCount() {
+        return staffCount;
+    }
+
+    public void setStaffCount(Integer staffCount) {
+        this.staffCount = staffCount;
     }
 
     public String getTwitterUrl() {
@@ -131,24 +155,6 @@ public class Pub implements Serializable {
         this.whatsappUrl = whatsappUrl;
     }
 
-    @XmlTransient
-    public List<Menu> getMenuList() {
-        return menuList;
-    }
-
-    public void setMenuList(List<Menu> menuList) {
-        this.menuList = menuList;
-    }
-
-    @XmlTransient
-    public List<Feedback> getFeedbackList() {
-        return feedbackList;
-    }
-
-    public void setFeedbackList(List<Feedback> feedbackList) {
-        this.feedbackList = feedbackList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -159,10 +165,10 @@ public class Pub implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Pub)) {
+        if (!(object instanceof WebsiteSettings)) {
             return false;
         }
-        Pub other = (Pub) object;
+        WebsiteSettings other = (WebsiteSettings) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -171,7 +177,7 @@ public class Pub implements Serializable {
 
     @Override
     public String toString() {
-        return "com.brotherhood.com.sphynx.entity.Pub[ id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.WebsiteSettings[ id=" + id + " ]";
     }
     
 }

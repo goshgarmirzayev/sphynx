@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Goshgar
+ * @author Thinkpad
  */
 @Entity
 @Table(name = "auth_group")
@@ -48,9 +47,9 @@ public class AuthGroup implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId")
     private List<AuthGroupRole> authGroupRoleList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupId")
     private List<User> userList;
 
     public AuthGroup() {
@@ -121,7 +120,7 @@ public class AuthGroup implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.AuthGroup[ id=" + id + " ]";
     }
     
 }

@@ -6,33 +6,31 @@
 package com.brotherhood.com.sphynx.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Thinkpad
  */
 @Entity
-@Table(name = "category")
+@Table(name = "menu")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MenuCategory.findAll", query = "SELECT m FROM MenuCategory m")
-    , @NamedQuery(name = "MenuCategory.findById", query = "SELECT m FROM MenuCategory m WHERE m.id = :id")
-    , @NamedQuery(name = "MenuCategory.findByName", query = "SELECT m FROM MenuCategory m WHERE m.name = :name")})
-public class MenuCategory implements Serializable {
+    @NamedQuery(name = "Menu.findAll", query = "SELECT m FROM Menu m")
+    , @NamedQuery(name = "Menu.findById", query = "SELECT m FROM Menu m WHERE m.id = :id")
+    , @NamedQuery(name = "Menu.findByPath", query = "SELECT m FROM Menu m WHERE m.path = :path")})
+public class Menu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,24 +40,26 @@ public class MenuCategory implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "name")
-    private String name;
-    @OneToMany(mappedBy = "categoryId")
-    private List<Product> productList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryId")
-    private List<Menu> menuList;
+    @Size(min = 1, max = 2000)
+    @Column(name = "path")
+    private String path;
+    @JoinColumn(name = "pub_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Pub pubId;
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private MenuCategory categoryId;
 
-    public MenuCategory() {
+    public Menu() {
     }
 
-    public MenuCategory(Integer id) {
+    public Menu(Integer id) {
         this.id = id;
     }
 
-    public MenuCategory(Integer id, String name) {
+    public Menu(Integer id, String path) {
         this.id = id;
-        this.name = name;
+        this.path = path;
     }
 
     public Integer getId() {
@@ -70,30 +70,28 @@ public class MenuCategory implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    @XmlTransient
-    public List<Product> getProductList() {
-        return productList;
+    public Pub getPubId() {
+        return pubId;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setPubId(Pub pubId) {
+        this.pubId = pubId;
     }
 
-    @XmlTransient
-    public List<Menu> getMenuList() {
-        return menuList;
+    public MenuCategory getCategoryId() {
+        return categoryId;
     }
 
-    public void setMenuList(List<Menu> menuList) {
-        this.menuList = menuList;
+    public void setCategoryId(MenuCategory categoryId) {
+        this.categoryId = categoryId;
     }
 
     @Override
@@ -106,10 +104,10 @@ public class MenuCategory implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MenuCategory)) {
+        if (!(object instanceof Menu)) {
             return false;
         }
-        MenuCategory other = (MenuCategory) object;
+        Menu other = (Menu) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -118,7 +116,7 @@ public class MenuCategory implements Serializable {
 
     @Override
     public String toString() {
-        return "com.brotherhood.com.sphynx.entity.MenuCategory[ id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.Menu[ id=" + id + " ]";
     }
     
 }

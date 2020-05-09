@@ -10,9 +10,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Goshgar
+ * @author Thinkpad
  */
 @Entity
 @Table(name = "user")
@@ -44,35 +41,27 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @NotNull
     @Column(name = "id")
     private Integer id;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     @Column(name = "email")
     private String email;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "enabled")
-    private boolean enabled;
-    @Basic(optional = false)
-    @NotNull
+    private Boolean enabled;
     @Column(name = "insert_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insertDateTime;
     @Column(name = "last_update_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateDateTime;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     @Column(name = "password")
     private String password;
     @JoinColumn(name = "group_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private AuthGroup groupId;
 
     public User() {
@@ -80,14 +69,6 @@ public class User implements Serializable {
 
     public User(Integer id) {
         this.id = id;
-    }
-
-    public User(Integer id, String email, boolean enabled, Date insertDateTime, String password) {
-        this.id = id;
-        this.email = email;
-        this.enabled = enabled;
-        this.insertDateTime = insertDateTime;
-        this.password = password;
     }
 
     public Integer getId() {
@@ -106,11 +87,11 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public boolean getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -168,7 +149,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "az.onbir.tv.entity.User[ id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.User[ id=" + id + " ]";
     }
     
 }

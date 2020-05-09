@@ -10,9 +10,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,26 +22,25 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Goshgar
+ *
+ * @author Thinkpad
  */
 @Entity
 @Table(name = "auth_group_role")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "AuthGroupRole.findAll", query = "SELECT a FROM AuthGroupRole a")
-        , @NamedQuery(name = "AuthGroupRole.findById", query = "SELECT a FROM AuthGroupRole a WHERE a.id = :id")
-        , @NamedQuery(name = "AuthGroupRole.findByInsertDateTime", query = "SELECT a FROM AuthGroupRole a WHERE a.insertDateTime = :insertDateTime")
-        , @NamedQuery(name = "AuthGroupRole.findByLastUpdateDateTime", query = "SELECT a FROM AuthGroupRole a WHERE a.lastUpdateDateTime = :lastUpdateDateTime")})
+    @NamedQuery(name = "AuthGroupRole.findAll", query = "SELECT a FROM AuthGroupRole a")
+    , @NamedQuery(name = "AuthGroupRole.findById", query = "SELECT a FROM AuthGroupRole a WHERE a.id = :id")
+    , @NamedQuery(name = "AuthGroupRole.findByInsertDateTime", query = "SELECT a FROM AuthGroupRole a WHERE a.insertDateTime = :insertDateTime")
+    , @NamedQuery(name = "AuthGroupRole.findByLastUpdateDateTime", query = "SELECT a FROM AuthGroupRole a WHERE a.lastUpdateDateTime = :lastUpdateDateTime")})
 public class AuthGroupRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "id")
+    private Integer id;
     @Column(name = "insert_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insertDateTime;
@@ -52,10 +48,10 @@ public class AuthGroupRole implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateDateTime;
     @JoinColumn(name = "group_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private AuthGroup groupId;
     @JoinColumn(name = "role_id", referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     private AuthRole roleId;
 
     public AuthGroupRole() {
@@ -63,11 +59,6 @@ public class AuthGroupRole implements Serializable {
 
     public AuthGroupRole(Integer id) {
         this.id = id;
-    }
-
-    public AuthGroupRole(Integer id, Date insertDateTime) {
-        this.id = id;
-        this.insertDateTime = insertDateTime;
     }
 
     public Integer getId() {
@@ -132,7 +123,7 @@ public class AuthGroupRole implements Serializable {
 
     @Override
     public String toString() {
-        return "az.onbir.tv.entity.AuthGroupRole[ id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.AuthGroupRole[ id=" + id + " ]";
     }
-
+    
 }

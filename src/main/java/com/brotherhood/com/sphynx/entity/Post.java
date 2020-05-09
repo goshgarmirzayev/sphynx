@@ -7,24 +7,41 @@ package com.brotherhood.com.sphynx.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Goshgar
+ *
+ * @author Thinkpad
  */
 @Entity
 @Table(name = "post")
 @XmlRootElement
 @NamedQueries({
-        @NamedQuery(name = "Post.findAll", query = "SELECT p FROM Post p")
-        , @NamedQuery(name = "Post.findById", query = "SELECT p FROM Post p WHERE p.id = :id")
-        , @NamedQuery(name = "Post.findByTitle", query = "SELECT p FROM Post p WHERE p.title = :title")
-        , @NamedQuery(name = "Post.findByApproved", query = "SELECT p FROM Post p WHERE p.approved = :approved")
-        , @NamedQuery(name = "Post.findByInsertDateTime", query = "SELECT p FROM Post p WHERE p.insertDateTime = :insertDateTime")
-        , @NamedQuery(name = "Post.findByLastUpdateTime", query = "SELECT p FROM Post p WHERE p.lastUpdateTime = :lastUpdateTime")})
+    @NamedQuery(name = "Post.findAll", query = "SELECT p FROM Post p")
+    , @NamedQuery(name = "Post.findById", query = "SELECT p FROM Post p WHERE p.id = :id")
+    , @NamedQuery(name = "Post.findByApproved", query = "SELECT p FROM Post p WHERE p.approved = :approved")
+    , @NamedQuery(name = "Post.findByInsertDateTime", query = "SELECT p FROM Post p WHERE p.insertDateTime = :insertDateTime")
+    , @NamedQuery(name = "Post.findByLastUpdateTime", query = "SELECT p FROM Post p WHERE p.lastUpdateTime = :lastUpdateTime")
+    , @NamedQuery(name = "Post.findByThumbnailPath", query = "SELECT p FROM Post p WHERE p.thumbnailPath = :thumbnailPath")
+    , @NamedQuery(name = "Post.findByTitle", query = "SELECT p FROM Post p WHERE p.title = :title")
+    , @NamedQuery(name = "Post.findByScheduleTime", query = "SELECT p FROM Post p WHERE p.scheduleTime = :scheduleTime")
+    , @NamedQuery(name = "Post.findByUniqueSlug", query = "SELECT p FROM Post p WHERE p.uniqueSlug = :uniqueSlug")
+    , @NamedQuery(name = "Post.findByDrafted", query = "SELECT p FROM Post p WHERE p.drafted = :drafted")
+    , @NamedQuery(name = "Post.findByScheduled", query = "SELECT p FROM Post p WHERE p.scheduled = :scheduled")})
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,9 +52,8 @@ public class Post implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "title")
-    private String title;
+    @Column(name = "approved")
+    private short approved;
     @Basic(optional = false)
     @NotNull
     @Lob
@@ -46,21 +62,36 @@ public class Post implements Serializable {
     private String content;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "approved")
-    private short approved;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "insert_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insertDateTime;
     @Column(name = "last_update_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
-    @Size(max = 255)
+    @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "thumbnail_path")
     private String thumbnailPath;
-
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "title")
+    private String title;
+    @Column(name = "schedule_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date scheduleTime;
+    @Size(max = 255)
+    @Column(name = "unique_slug")
+    private String uniqueSlug;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "drafted")
+    private boolean drafted;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "scheduled")
+    private boolean scheduled;
 
     public Post() {
     }
@@ -69,13 +100,15 @@ public class Post implements Serializable {
         this.id = id;
     }
 
-    public Post(String title, String content, short approved, Date insertDateTime, Date lastUpdateTime, String thumbnailPath) {
-        this.title = title;
-        this.content = content;
+    public Post(Integer id, short approved, String content, Date insertDateTime, String thumbnailPath, String title, boolean drafted, boolean scheduled) {
+        this.id = id;
         this.approved = approved;
+        this.content = content;
         this.insertDateTime = insertDateTime;
-        this.lastUpdateTime = lastUpdateTime;
         this.thumbnailPath = thumbnailPath;
+        this.title = title;
+        this.drafted = drafted;
+        this.scheduled = scheduled;
     }
 
     public Integer getId() {
@@ -86,12 +119,12 @@ public class Post implements Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public short getApproved() {
+        return approved;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setApproved(short approved) {
+        this.approved = approved;
     }
 
     public String getContent() {
@@ -100,14 +133,6 @@ public class Post implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public short getApproved() {
-        return approved;
-    }
-
-    public void setApproved(short approved) {
-        this.approved = approved;
     }
 
     public Date getInsertDateTime() {
@@ -126,13 +151,52 @@ public class Post implements Serializable {
         this.lastUpdateTime = lastUpdateTime;
     }
 
-
     public String getThumbnailPath() {
         return thumbnailPath;
     }
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getScheduleTime() {
+        return scheduleTime;
+    }
+
+    public void setScheduleTime(Date scheduleTime) {
+        this.scheduleTime = scheduleTime;
+    }
+
+    public String getUniqueSlug() {
+        return uniqueSlug;
+    }
+
+    public void setUniqueSlug(String uniqueSlug) {
+        this.uniqueSlug = uniqueSlug;
+    }
+
+    public boolean getDrafted() {
+        return drafted;
+    }
+
+    public void setDrafted(boolean drafted) {
+        this.drafted = drafted;
+    }
+
+    public boolean getScheduled() {
+        return scheduled;
+    }
+
+    public void setScheduled(boolean scheduled) {
+        this.scheduled = scheduled;
     }
 
     @Override
@@ -157,7 +221,7 @@ public class Post implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.Post[ id=" + id + " ]";
     }
-
+    
 }

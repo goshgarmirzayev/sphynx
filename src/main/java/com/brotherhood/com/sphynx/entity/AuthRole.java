@@ -12,9 +12,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -29,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Goshgar
+ * @author Thinkpad
  */
 @Entity
 @Table(name = "auth_role")
@@ -44,24 +41,20 @@ public class AuthRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
     @Basic(optional = false)
     @NotNull
+    @Column(name = "id")
+    private Integer id;
     @Column(name = "insert_date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insertDateTime;
     @Column(name = "last_update_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdateTime;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
+    @Size(max = 255)
     @Column(name = "name")
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roleId", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roleId")
     private List<AuthGroupRole> authGroupRoleList;
 
     public AuthRole() {
@@ -69,12 +62,6 @@ public class AuthRole implements Serializable {
 
     public AuthRole(Integer id) {
         this.id = id;
-    }
-
-    public AuthRole(Integer id, Date insertDateTime, String name) {
-        this.id = id;
-        this.insertDateTime = insertDateTime;
-        this.name = name;
     }
 
     public Integer getId() {
@@ -140,7 +127,7 @@ public class AuthRole implements Serializable {
 
     @Override
     public String toString() {
-        return "az.onbir.tv.entity.AuthRole[ id=" + id + " ]";
+        return "com.brotherhood.com.sphynx.entity.AuthRole[ id=" + id + " ]";
     }
     
 }
